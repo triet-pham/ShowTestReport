@@ -1,0 +1,109 @@
+<html>
+  <head>
+    <title>E2E test reports</title>
+    <script>
+    function queryData() {
+      var ajax = new XMLHttpRequest();
+      ajax.open('POST', 'report', false);
+      ajax.send();
+      if (ajax.status != 200) return null;
+      var data = JSON.parse(ajax.responseText);
+      if ('error' in data) return null;
+      return data;
+    }
+
+    function render() {
+      var data = queryData();
+      if (typeof data == "object" && Array.isArray(data)) {
+        var reportFile = data.pop();
+        var reportFolder = data.pop();
+        var finalHTML = "";
+
+        data.sort();
+        data.reverse();
+        data.forEach(item => {
+          let itemText = item.split(' ');
+          itemText[0] = 'Date: <span class="date">' + itemText[0] + '</span><br>';
+          itemText[1] = 'Time: <span class="time">' + itemText[1].substring(0, 8).replace(/\./g, ':') + '</span>';
+          itemText.unshift("<h3>Test report</h3> <br>");
+          itemText = '<strong>' + itemText.join(' ') + '</strong>';
+
+          let html = '<a href="/' + reportFolder + '/' + item + '/' + reportFile + '">\n';
+          html += '  <div id="report">';
+          html += '<span>' + itemText + '</span>';
+          html += '</div>\n';
+          html += '</a>';
+          finalHTML += '\n' + html;
+        });
+
+        showLoading(false);
+        setText('reports', finalHTML);
+      }
+      else {
+        setText(loading, 'There was an error.<br>' + data);
+      }
+    }
+
+    function setText(elementID, msg) {
+      document.getElementById(elementID).innerHTML = msg;
+    }
+
+    function showLoading(show) {
+      document.getElementById('loading').style.display = (show === false ? 'none' : '');
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+      render()
+    });
+    </script>
+
+    <style>
+      #reports {
+        margin: auto;
+        width: 70%;
+        min-width: 300px;
+        max-width: 1600px;
+        padding: 10px;
+      }
+
+      #reports a {
+        color: black;
+      }
+
+      #report {
+        float: left;
+        margin: 20px;
+        min-width: 250px;
+        width: 250px;
+        min-height: 100px;
+        height: 100px;
+        background-color: #dec;
+        cursor: pointer;
+        text-align: center;
+        vertical-align: middle;
+        border-radius: 10px;
+        border-width: 2px;
+        border-color: #bca;
+        border-style: groove;
+      }
+
+      #report h3 {
+        margin-bottom: 0px;
+        color: darkblue;
+      }
+
+      .date {
+        color: blue;
+      }
+
+      .time {
+        color: blue;
+      }
+    </style>
+  </head>
+  <body>
+    <h1 id='page_title' align='center'></h1>
+    <div id='loading' style='display: "";'>Loading...</div>
+    <div id='reports'></div>
+  </body>
+</html>
