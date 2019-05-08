@@ -60,10 +60,13 @@
     <style>
       #reports {
         margin: auto;
-        width: 70%;
+        width: 85%;
         min-width: 300px;
         max-width: 1600px;
         padding: 10px;
+		display: flex;
+		flex-wrap: wrap;
+		justify-content: flex-start;
       }
 
       #reports a {
@@ -71,10 +74,9 @@
       }
 
       #report {
-        float: left;
         margin: 20px;
-        min-width: 250px;
-        width: 250px;
+        min-width: 220px;
+        width: 220px;
         min-height: 100px;
         height: 100px;
         background-color: #dec;
@@ -102,7 +104,7 @@
     </style>
   </head>
   <body>
-    <h1 id='page_title' align='center'></h1>
+    <h1 id='page_title' align='center'>E2E test reports</h1>
     <div id='loading' style='display: "";'>Loading...</div>
     <div id='reports'></div>
   </body>
