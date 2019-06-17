@@ -14,18 +14,31 @@
 
     function render() {
       var data = queryData();
+	  const MAX_ITEM = 50;
       if (typeof data == "object" && Array.isArray(data)) {
         var reportFile = data.pop();
         var reportFolder = data.pop();
         var finalHTML = "";
-
+		var today = new Date();
+		var yesterday = new Date();
+		yesterday.setDate(today.getDate()-1);
+		today = today.toISOString().substr(0, 10);
+		yesterday = yesterday.toISOString().substr(0, 10);
+		
         data.sort();
         data.reverse();
+		data.splice(MAX_ITEM);
         data.forEach(item => {
           let itemText = item.split(' ');
+		  let title = "<h3 class=\"title\">";
+		  if (itemText[0] == today) title += "Today test report</h3> <br>";
+		  else if (itemText[0] == yesterday) title += "Yesterday test report</h3> <br>";
+		  else title += "Test report</h3> <br>";;
           itemText[0] = 'Date: <span class="date">' + itemText[0] + '</span><br>';
           itemText[1] = 'Time: <span class="time">' + itemText[1].substring(0, 8).replace(/\./g, ':') + '</span>';
-          itemText.unshift("<h3>Test report</h3> <br>");
+		  
+		  
+          itemText.unshift(title);
           itemText = '<strong>' + itemText.join(' ') + '</strong>';
 
           let html = '<a href="/' + reportFolder + '/' + item + '/' + reportFile + '">\n';
@@ -70,7 +83,19 @@
       }
 
       #reports a {
-        color: black;
+		text-decoration: none;
+      }
+	  
+	  #reports a:link {
+		color: blue;
+      }
+	  
+	  #reports a:visited {
+		color: black;
+      }
+	  
+	  #reports a:hover {
+		color: purple;
       }
 
       #report {
@@ -101,6 +126,10 @@
       .time {
         color: blue;
       }
+	  
+	  .title {
+	    color: black;
+	  }
     </style>
   </head>
   <body>
