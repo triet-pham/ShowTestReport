@@ -2,6 +2,7 @@
 
 const config = require('./config.json');
 const express = require('express');
+const compression = require('compression');
 const bodyParser = require('body-parser');
 const child_process = require('child_process');
 const fs = require('fs');
@@ -13,9 +14,11 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
   extended: true
 }));
+app.use(compression());
 app.use(express.static('static'));
+
 const server = app.listen(config.port, () => {
-  console.log('Express server listening on port %d in %s mode', server.address().port, app.settings.env);
+  log('Express server listening on port %d in %s mode', server.address().port, app.settings.env);
 });
 
 app.get('/', (req, res) => {
@@ -47,4 +50,9 @@ function getReportFolderList() {
     results.push(config.reportFile);
   }
   return results;
+}
+
+function log(text, ...params) {
+  var d = new Date();
+  console.log(d.toISOString() + ' ' +  text, ...params);
 }
